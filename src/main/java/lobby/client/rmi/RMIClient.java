@@ -8,7 +8,7 @@ import java.io.IOException;
 public class RMIClient extends GenericClient {
 
     public RMIClient(Client client) {
-        setClient(client);
+        super(client);
     }
 
     /**

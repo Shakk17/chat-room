@@ -17,7 +17,6 @@ public class TextUserInterface implements UserInterface {
         this.genericClient = genericClient;
     }
 
-    @Override
     public void login() {
         while (!genericClient.isLogged()) {
             Console.write("Insert your username to enter the lobby: ");

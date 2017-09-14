@@ -11,9 +11,9 @@ import java.io.Serializable;
 public abstract class Message implements Serializable {
 
 	/**
-	 * Implements a Visitor pattern to handle all possible messages.
+	 * Implements a Visitor pattern to execute all possible messages.
 	 * @param socketClient will handle the message forwarding and eventual returned values.
 	 * @throws IOException if a socket connectivity occurs.
 	 */
-	public abstract void handleMessage(SocketClient socketClient) throws IOException;
+	public abstract void execute(SocketClient socketClient) throws IOException;
 }

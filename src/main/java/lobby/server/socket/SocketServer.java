@@ -1,6 +1,7 @@
 package lobby.server.socket;
 
 import lobby.SocketStream;
+import lobby.messages.AskLoginMessage;
 import lobby.messages.LoginMessage;
 import lobby.server.Server;
 import lobby.server.GenericServer;
@@ -42,7 +43,6 @@ public class SocketServer extends GenericServer implements Runnable {
     /**
      * Handles the player's login or the player reconnection.
      */
-    @Override
     public void run(){
         loginHandler();
     }
@@ -51,6 +51,7 @@ public class SocketServer extends GenericServer implements Runnable {
      * Handles the login of a client, this method won't end until the client is authenticated or disconnects.
      */
     private void loginHandler() {
+        socketStream.sendObject(new AskLoginMessage());
         while (!isLogged()) {
             LoginMessage loginMessage = (LoginMessage)socketStream.receiveObject();
 

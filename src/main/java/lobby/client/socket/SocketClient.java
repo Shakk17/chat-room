@@ -28,13 +28,13 @@ public class SocketClient extends GenericClient implements Runnable {
      * @param client contains specific of the client.
      */
     public SocketClient(Client client) {
-        setClient(client);
-        setLogged(false);
+        super(client);
 
         Socket socket;
         try {
             socket = new Socket(IP_ADDRESS, PORT);
             socketStream = new SocketStream(socket);
+            setConnected(true);
             Console.write("Socket connection established.");
         } catch (IOException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure while establishing socket connection.", e);
@@ -43,12 +43,9 @@ public class SocketClient extends GenericClient implements Runnable {
         if (client.getUserInterfaceType() == UserInterfaceType.TEXT)
             setUserInterface(new TextUserInterface(this));
 
-        login();
         new Thread(this).start();
-        getUserInterface().handleInput();
     }
 
-    @Override
     public void run() {
         waitForMessage();
     }
@@ -56,11 +53,11 @@ public class SocketClient extends GenericClient implements Runnable {
     /**
      * Waits for messages from the server and executes their logic using a visitor pattern.
      */
-    public void waitForMessage() {
-        while (isLogged()) {
+    private void waitForMessage() {
+        while (isConnected()) {
             Message message = (Message) receiveMessage();
             try {
-                message.handleMessage(this);
+                message.execute(this);
             } catch (IOException e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Socket connectivity error.", e);
             }

@@ -10,14 +10,14 @@ public abstract class GenericClient {
     private LobbyView lobbyView;
     private UserInterface userInterface;
 
+    private boolean connected;
     private boolean logged;
     private String username;
 
-    /**
-     * Tries to log into server, returns the server response.
-     */
-    public void login() {
-        userInterface.login();
+    public GenericClient(Client client) {
+        setClient(client);
+        setConnected(false);
+        setLogged(false);
     }
 
     /**
@@ -60,6 +60,10 @@ public abstract class GenericClient {
      */
     public abstract boolean receiveBoolean();
 
+    public Client getClient() {
+        return client;
+    }
+
     public void setClient(Client client) {
         this.client = client;
     }
@@ -74,6 +78,14 @@ public abstract class GenericClient {
 
     public void setUserInterface(UserInterface userInterface) {
         this.userInterface = userInterface;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     public boolean isLogged() {
