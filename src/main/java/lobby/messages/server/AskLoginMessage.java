@@ -1,10 +1,10 @@
-package lobby.messages;
+package lobby.messages.server;
 
 import lobby.client.socket.SocketClient;
 
 import java.io.IOException;
 
-public class AskLoginMessage extends Message {
+public class AskLoginMessage implements ServerMessage {
     /**
      * Implements a Visitor pattern to execute all possible messages.
      *

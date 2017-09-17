@@ -1,4 +1,4 @@
-package lobby.messages;
+package lobby.messages.client;
 
 import java.io.Serializable;
 

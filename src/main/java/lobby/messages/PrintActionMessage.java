@@ -1,10 +1,11 @@
 package lobby.messages;
 
 import lobby.client.socket.SocketClient;
+import lobby.messages.server.ServerMessage;
 
 import java.io.IOException;
 
-public class PrintActionMessage extends Message {
+public class PrintActionMessage implements ServerMessage {
 
     private String action;
 

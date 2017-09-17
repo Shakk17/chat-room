@@ -91,13 +91,22 @@ public class Server {
      * Tries to add a user to the map of connected users with correspondent interfaces.
      * @return true if successful, false if username is already taken.
      */
-    public boolean addUser(String username, GenericServer genericServer) {
+    public boolean addUser(String userName, GenericServer genericServer) {
         for (String string : users.keySet())
-            if (string.equals(username))
+            if (string.equals(userName))
                 return false;
-        users.put(username, genericServer);
-        Console.writeGreen("The user " + username + " just entered the lobby!");
+        users.put(userName, genericServer);
+        Console.writeGreen("The user " + userName + " just entered the lobby!");
         return true;
+    }
+
+    /**
+     * Tries to remove a user from users already logged.
+     * @param userName name of the entry to be removed.
+     * @return true is successful, false otherwise.
+     */
+    public boolean removeUser(String userName) {
+        return null != users.remove(userName);
     }
 
     public Map<String, GenericServer> getUsers() {

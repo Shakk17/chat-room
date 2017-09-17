@@ -1,8 +1,8 @@
 package lobby.server.socket;
 
 import lobby.SocketStream;
-import lobby.messages.AskLoginMessage;
-import lobby.messages.LoginMessage;
+import lobby.messages.server.AskLoginMessage;
+import lobby.messages.client.LoginMessage;
 import lobby.server.Server;
 import lobby.server.GenericServer;
 import lobby.server.networkObservers.ObserversNetworkHandler;
@@ -21,11 +21,6 @@ public class SocketServer extends GenericServer implements Runnable {
     private SocketStream socketStream;
 
     /**
-     * Socket implementation of GeneralInterface who will handle the player's methods calls
-     */
-    private SocketUserInterface socketUserInterface;
-
-    /**
      * Will handle the player's view updates.
      */
     private ObserversNetworkHandler observersNetworkHandler;
@@ -36,7 +31,6 @@ public class SocketServer extends GenericServer implements Runnable {
      */
     SocketServer(Socket socket) throws IOException {
         this.socketStream = new SocketStream(socket);
-        this.socketUserInterface = new SocketUserInterface(this);
         setUserName("not logged user");
     }
 
@@ -50,6 +44,8 @@ public class SocketServer extends GenericServer implements Runnable {
     /**
      * Handles the login of a client, this method won't end until the client is authenticated or disconnects.
      */
+
+    //TODO: cambio e faccio con messaggi, non è server che chiede login, ma client
     private void loginHandler() {
         socketStream.sendObject(new AskLoginMessage());
         while (!isLogged()) {
@@ -60,5 +56,11 @@ public class SocketServer extends GenericServer implements Runnable {
             if (isLogged())
                 setUserName(loginMessage.getUsername());
         }
+    }
+
+    public void logOut() {
+        boolean userRemoved = Server.getServerInstance().removeUser(getUserName());
+        setLogged(!userRemoved);
+        socketStream.sendBoolean(!isLogged());
     }
 }

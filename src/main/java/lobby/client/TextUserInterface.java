@@ -1,7 +1,7 @@
 package lobby.client;
 
 import lobby.Console;
-import lobby.messages.LoginMessage;
+import lobby.messages.client.LoginMessage;
 import lobby.view.LobbyView;
 
 import java.io.IOException;
@@ -15,6 +15,25 @@ public class TextUserInterface implements UserInterface {
 
     public TextUserInterface(GenericClient genericClient) {
         this.genericClient = genericClient;
+        readChoice();
+    }
+
+    public void readChoice() {
+        Console.write("Write 'users' to see the users logged in the lobby.");
+        while (genericClient.isLogged()) {
+            String input = Console.readString();
+            switch (input) {
+                case "users":
+
+                    break;
+                case "logout":
+                    logout();
+                    break;
+                default:
+                    Console.writeRed("Wrong input! Try again.");
+                    break;
+            }
+        }
     }
 
     public void login() {
@@ -33,5 +52,9 @@ public class TextUserInterface implements UserInterface {
                 genericClient.setUsername(loginMessage.getUsername());
         }
         Console.writeGreen("Login successful!");
+    }
+
+    public void logout() {
+
     }
 }

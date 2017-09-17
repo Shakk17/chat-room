@@ -6,7 +6,7 @@ import lobby.client.Client;
 import lobby.client.GenericClient;
 import lobby.SocketStream;
 import lobby.client.TextUserInterface;
-import lobby.messages.Message;
+import lobby.messages.server.ServerMessage;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -55,9 +55,9 @@ public class SocketClient extends GenericClient implements Runnable {
      */
     private void waitForMessage() {
         while (isConnected()) {
-            Message message = (Message) receiveMessage();
+            ServerMessage serverMessage = (ServerMessage) receiveMessage();
             try {
-                message.execute(this);
+                serverMessage.execute(this);
             } catch (IOException e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Socket connectivity error.", e);
             }
