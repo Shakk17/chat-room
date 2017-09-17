@@ -5,15 +5,22 @@ package lobby.server;
  */
 public abstract class GenericServer {
 
+    private boolean connected;
     private boolean logged;
     private String userName;
 
-    public String getUserName() {
-        return userName;
+    public GenericServer() {
+        this.connected = true;
+        this.logged = false;
+        this.userName = "not set yet";
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     public boolean isLogged() {
@@ -22,5 +29,13 @@ public abstract class GenericServer {
 
     public void setLogged(boolean logged) {
         this.logged = logged;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

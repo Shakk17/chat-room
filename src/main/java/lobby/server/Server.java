@@ -16,7 +16,7 @@ public class Server {
 
     private Map<String, GenericServer> users;
 
-    public static Server serverInstance;
+    private static Server serverInstance;
     private boolean serverActive;
 
     /**
@@ -65,12 +65,7 @@ public class Server {
             command = Console.readString();
             switch (command) {
                 case "users":
-                    Console.writeBlue(users.size() + " users logged in: ");
-                    StringBuilder userNames = new StringBuilder();
-                    for (String userName : users.keySet())
-                        userNames.append(userName).append(", ");
-                    userNames.delete(userNames.length() - 2, userNames.length());
-                    Console.write(userNames.toString());
+                    printUsers();
                     break;
                 case "close":
                     serverActive = false;
@@ -106,7 +101,23 @@ public class Server {
      * @return true is successful, false otherwise.
      */
     public boolean removeUser(String userName) {
-        return null != users.remove(userName);
+        boolean userRemoved = null != users.remove(userName);
+        if (userRemoved)
+            Console.writeGreen("The user " + userName + " just exited the lobby!");
+        return userRemoved;
+    }
+
+    private void printUsers() {
+        if (users.isEmpty()) {
+            Console.writeBlue("The lobby is empty!");
+            return;
+        }
+        Console.writeBlue(users.size() + " users logged in: ");
+        StringBuilder userNames = new StringBuilder();
+        for (String userName : users.keySet())
+            userNames.append(userName).append(", ");
+        userNames.delete(userNames.length() - 2, userNames.length());
+        Console.write(userNames.toString());
     }
 
     public Map<String, GenericServer> getUsers() {

@@ -1,7 +1,7 @@
 package lobby.server.socket;
 
 import lobby.SocketStream;
-import lobby.messages.server.AskLoginMessage;
+import lobby.messages.client.ClientMessage;
 import lobby.messages.client.LoginMessage;
 import lobby.server.Server;
 import lobby.server.GenericServer;
@@ -30,15 +30,15 @@ public class SocketServer extends GenericServer implements Runnable {
      * @throws IOException if not able to create the ObjectStreams relative to this socket.
      */
     SocketServer(Socket socket) throws IOException {
+        super();
         this.socketStream = new SocketStream(socket);
-        setUserName("not logged user");
     }
 
     /**
      * Handles the player's login or the player reconnection.
      */
     public void run(){
-        loginHandler();
+        waitForMessages();
     }
 
     /**
@@ -46,21 +46,22 @@ public class SocketServer extends GenericServer implements Runnable {
      */
 
     //TODO: cambio e faccio con messaggi, non è server che chiede login, ma client
-    private void loginHandler() {
-        socketStream.sendObject(new AskLoginMessage());
-        while (!isLogged()) {
-            LoginMessage loginMessage = (LoginMessage)socketStream.receiveObject();
-
-            setLogged(Server.getServerInstance().addUser(loginMessage.getUsername(), this));
-            socketStream.sendBoolean(isLogged());
-            if (isLogged())
-                setUserName(loginMessage.getUsername());
+    private void waitForMessages() {
+        while (isConnected()) {
+            ClientMessage clientMessage = (ClientMessage)socketStream.receiveObject();
+            try {
+                clientMessage.execute(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void logOut() {
-        boolean userRemoved = Server.getServerInstance().removeUser(getUserName());
-        setLogged(!userRemoved);
-        socketStream.sendBoolean(!isLogged());
+    public SocketStream getSocketStream() {
+        return socketStream;
+    }
+
+    public void setSocketStream(SocketStream socketStream) {
+        this.socketStream = socketStream;
     }
 }

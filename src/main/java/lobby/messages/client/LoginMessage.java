@@ -1,17 +1,29 @@
 package lobby.messages.client;
 
-import java.io.Serializable;
+import lobby.server.Server;
+import lobby.server.socket.SocketServer;
 
-public class LoginMessage implements Serializable {
+import java.io.IOException;
+
+public class LoginMessage implements ClientMessage {
     private static final long serialVersionUID = -4520332386402808781L;
 
-    private String username;
+    private String userName;
 
-    public LoginMessage(String username) {
-        this.username = username;
+    public LoginMessage(String userName) {
+        this.userName = userName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
+    }
+
+    @Override
+    public void execute(SocketServer socketServer) throws IOException {
+        boolean loginResult = Server.getServerInstance().addUser(userName, socketServer);
+        socketServer.getSocketStream().sendBoolean(loginResult);
+        socketServer.setLogged(loginResult);
+        if (loginResult)
+            socketServer.setUserName(userName);
     }
 }

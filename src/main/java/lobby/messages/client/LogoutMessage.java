@@ -22,7 +22,9 @@ public class LogoutMessage implements ClientMessage {
      * @throws IOException if a socket connectivity occurs.
      */
     @Override
-    public void execute() throws IOException {
-        ((SocketServer)Server.getServerInstance().getUsers().get(userName)).lo;
+    public void execute(SocketServer socketServer) throws IOException {
+        boolean userRemoved = Server.getServerInstance().removeUser(getUserName());
+        socketServer.setLogged(!userRemoved);
+        socketServer.getSocketStream().sendBoolean(!socketServer.isLogged());
     }
 }
