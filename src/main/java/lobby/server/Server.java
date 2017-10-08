@@ -1,12 +1,16 @@
 package lobby.server;
 
 import lobby.Console;
+import lobby.server.rmi.RMIServer;
 import lobby.server.socket.MainSocketServer;
 
+import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
 
@@ -46,18 +50,17 @@ public class Server {
         mainSocketServer.start();
 
         Console.write("Socket server launched!");
-        /*
+
         Console.write("Launching RMI server...");
-        GeneralServerRMI serverRMI;
+        RMIServer rmiServer;
         try {
-            serverRMI = new GeneralServerRMI();
-            serverRMI.start();
+            rmiServer = new RMIServer();
+            rmiServer.start();
         } catch (RemoteException e){
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE,"Failed to initialize RMI server!", e);
         }
-
         Console.write("RMI server launched!");
-        */
+
         executor = Executors.newCachedThreadPool();
 
         String command;

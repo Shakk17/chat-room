@@ -2,13 +2,13 @@ package lobby.server.socket;
 
 import lobby.SocketStream;
 import lobby.messages.client.ClientMessage;
-import lobby.messages.client.LoginMessage;
-import lobby.server.Server;
 import lobby.server.GenericServer;
 import lobby.server.networkObservers.ObserversNetworkHandler;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class handles the socket connectivity of a single player.
@@ -42,17 +42,15 @@ public class SocketServer extends GenericServer implements Runnable {
     }
 
     /**
-     * Handles the login of a client, this method won't end until the client is authenticated or disconnects.
+     * Waits for messages and executes them.
      */
-
-    //TODO: cambio e faccio con messaggi, non è server che chiede login, ma client
     private void waitForMessages() {
         while (isConnected()) {
             ClientMessage clientMessage = (ClientMessage)socketStream.receiveObject();
             try {
                 clientMessage.execute(this);
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE,"[SERVER SOCKET]: Failure while receiving messages!", e);
             }
         }
     }
