@@ -1,5 +1,6 @@
 package lobby.messages.client;
 
+import lobby.server.rmi.MainRmiServer;
 import lobby.server.socket.SocketServer;
 
 import java.io.IOException;

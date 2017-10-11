@@ -1,7 +1,7 @@
 package lobby.server;
 
 import lobby.Console;
-import lobby.server.rmi.RMIServer;
+import lobby.server.rmi.MainRmiServer;
 import lobby.server.socket.MainSocketServer;
 
 import java.rmi.RemoteException;
@@ -17,6 +17,8 @@ public class Server {
     public static final int SOCKET_PORT = 8080;
     public static final int RMI_PORT = 8000;
     public static final String IP_ADDRESS = "localhost";
+    public static final String SOCKET_SERVER_NAME = "SOCKET SERVER";
+    public static final String RMI_SERVER_NAME = "RMI SERVER";
 
     private Map<String, GenericServer> users;
 
@@ -44,22 +46,20 @@ public class Server {
      * close them if "close" is typed into terminal
      */
     public void launchServers() {
-        Console.write("Launching Socket server...");
-
+        write(SOCKET_SERVER_NAME, "Launching...");
         MainSocketServer mainSocketServer = new MainSocketServer();
         mainSocketServer.start();
+        write(SOCKET_SERVER_NAME, "Operative!");
 
-        Console.write("Socket server launched!");
-
-        Console.write("Launching RMI server...");
-        RMIServer rmiServer;
+        write(RMI_SERVER_NAME, "Launching...");
+        MainRmiServer mainRmiServer;
         try {
-            rmiServer = new RMIServer();
-            rmiServer.start();
+            mainRmiServer = new MainRmiServer();
+            mainRmiServer.start();
         } catch (RemoteException e){
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE,"Failed to initialize RMI server!", e);
         }
-        Console.write("RMI server launched!");
+        write(RMI_SERVER_NAME, "Operative!");
 
         executor = Executors.newCachedThreadPool();
 
@@ -83,6 +83,13 @@ public class Server {
         executor.shutdownNow();
         mainSocketServer.terminate();
         mainSocketServer.interrupt();
+    }
+
+    public boolean checkUserName(String userName) {
+        for (String string : users.keySet())
+            if (string.equals(userName))
+                return false;
+        return true;
     }
 
     /**
@@ -129,5 +136,12 @@ public class Server {
 
     public boolean isServerActive() {
         return serverActive;
+    }
+
+    public static void write(String name, String action) {
+        if (name.equals(RMI_SERVER_NAME))
+            Console.writeBlue("["+ name +"]: "+ action);
+        else
+            Console.writeGreen("["+ name +"]: "+ action);
     }
 }

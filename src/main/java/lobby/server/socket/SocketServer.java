@@ -35,7 +35,7 @@ public class SocketServer extends GenericServer implements Runnable {
     }
 
     /**
-     * Handles the player's login or the player reconnection.
+     * Handles the player's tryLogin or the player reconnection.
      */
     public void run(){
         waitForMessages();

@@ -2,8 +2,6 @@ package lobby.client;
 
 import lobby.view.LobbyView;
 
-import java.io.IOException;
-
 public abstract class GenericClient {
 
     private Client client;
@@ -20,45 +18,8 @@ public abstract class GenericClient {
         setLogged(false);
     }
 
-    /**
-     * Sends a message to the server.
-     * @param message message to be sent
-     * @throws IOException if a socket connectivity occurs
-     */
-    public abstract void sendMessage(Object message) throws IOException;
-
-    /**
-     * Sends a Boolean to the server.
-     * @param message boolean to be sent
-     * @throws IOException if a socket connectivity occurs
-     */
-    public abstract void sendBoolean(boolean message) throws IOException;
-
-    /**
-     * Sends a String to the server.
-     * @param message String to be sent
-     * @throws IOException if a socket connectivity occurs
-     */
-    public abstract void sendString(String message) throws IOException;
-
-    /**
-     * Receive an object from the server.
-     * @throws IOException if there are socket connectivity problems.
-     * @throws ClassNotFoundException if unexpected message.
-     */
-    public abstract Object receiveMessage() throws IOException, ClassNotFoundException;
-
-    /**
-     * Receive a String from the server.
-     * @throws IOException if there are socket connectivity problems.
-     */
-    public abstract String receiveString() throws IOException;
-
-    /**
-     * Receive a boolean from the server.
-     * @throws IOException if there are socket connectivity problems.
-     */
-    public abstract boolean receiveBoolean();
+    abstract public void login(String userName);
+    abstract public void logout();
 
     public Client getClient() {
         return client;

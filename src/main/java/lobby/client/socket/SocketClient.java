@@ -6,6 +6,8 @@ import lobby.client.Client;
 import lobby.client.GenericClient;
 import lobby.SocketStream;
 import lobby.client.TextUserInterface;
+import lobby.messages.client.LoginMessage;
+import lobby.messages.client.LogoutMessage;
 import lobby.messages.server.ServerMessage;
 
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class SocketClient extends GenericClient implements Runnable {
      */
     private void waitForMessage() {
         while (isConnected()) {
-            ServerMessage serverMessage = (ServerMessage) receiveMessage();
+            ServerMessage serverMessage = (ServerMessage) getSocketStream().receiveObject();
             try {
                 serverMessage.execute(this);
             } catch (IOException e) {
@@ -64,50 +66,30 @@ public class SocketClient extends GenericClient implements Runnable {
         }
     }
 
-    /**
-     * Receives an Object from the server.
-     */
-    public Object receiveMessage() {
-        return socketStream.receiveObject();
+    @Override
+    public void login(String userName) {
+        LoginMessage loginMessage = new LoginMessage(userName);
+        socketStream.sendObject(loginMessage);
+        setLogged(socketStream.receiveBoolean());
+        if (isLogged()) {
+            setUsername(loginMessage.getUserName());
+            Console.writeGreen("Login successful!");
+        }
+        else
+            Console.writeRed("This username is already taken. Try again.");
     }
 
-    /**
-     * Receives a String from the server.
-     */
     @Override
-    public String receiveString() {
-        return socketStream.receiveString();
+    public void logout() {
+        LogoutMessage logoutMessage = new LogoutMessage(getUsername());
+        socketStream.sendObject(logoutMessage);
+        boolean logoutSuccessful = socketStream.receiveBoolean();
+        setLogged(! logoutSuccessful);
+        if (logoutSuccessful)
+            Console.write("You just logged out!");
     }
 
-    /**
-     * Receives a boolean from the server.
-     */
-    @Override
-    public boolean receiveBoolean() {
-        return socketStream.receiveBoolean();
-    }
-
-    /**
-     * Sends a message to the server.
-     */
-    @Override
-    public void sendMessage(Object message) {
-        socketStream.sendObject(message);
-    }
-
-    /**
-     * Sends a boolean to the server.
-     */
-    @Override
-    public void sendBoolean(boolean message) {
-        socketStream.sendBoolean(message);
-    }
-
-    /**
-     * Sends a String to the server.
-     */
-    @Override
-    public void sendString(String message) throws IOException {
-        socketStream.sendString(message);
+    public SocketStream getSocketStream() {
+        return socketStream;
     }
 }

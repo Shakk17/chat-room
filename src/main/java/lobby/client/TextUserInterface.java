@@ -1,13 +1,7 @@
 package lobby.client;
 
 import lobby.Console;
-import lobby.messages.client.LoginMessage;
-import lobby.messages.client.LogoutMessage;
 import lobby.view.LobbyView;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TextUserInterface implements UserInterface {
 
@@ -23,11 +17,11 @@ public class TextUserInterface implements UserInterface {
         while (genericClient.isConnected()) {
             String input = Console.readString();
             switch (input) {
-                case "login":
-                    login();
+                case "tryLogin":
+                    tryLogin();
                     break;
-                case "logout":
-                    logout();
+                case "tryLogout":
+                    tryLogout();
                     break;
                 default:
                     Console.writeRed("Wrong input! Try again.");
@@ -36,41 +30,20 @@ public class TextUserInterface implements UserInterface {
         }
     }
 
-    public void login() {
+    public void tryLogin() {
         if (genericClient.isLogged()) {
             Console.write("You are already logged in!");
             return;
         }
         Console.write("Insert your username to enter the lobby: ");
-        LoginMessage loginMessage = new LoginMessage(Console.readString());
-        try {
-            genericClient.sendMessage(loginMessage);
-            genericClient.setLogged(genericClient.receiveBoolean());
-        } catch(IOException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure while establishing socket connection.", e);
-        }
-        if (genericClient.isLogged()) {
-            genericClient.setUsername(loginMessage.getUserName());
-            Console.writeGreen("Login successful!");
-        }
-        else
-            Console.writeRed("This username is already taken. Try again.");
+        genericClient.login(Console.readString());
     }
 
-    public void logout() {
+    public void tryLogout() {
         if (! genericClient.isLogged()) {
             Console.writeRed("You're not even logged in -.-");
             return;
         }
-        LogoutMessage logoutMessage = new LogoutMessage(genericClient.getUsername());
-        try {
-            genericClient.sendMessage(logoutMessage);
-            boolean logoutSuccessful = genericClient.receiveBoolean();
-            genericClient.setLogged(! logoutSuccessful);
-            if (logoutSuccessful)
-                Console.write("You just logged out!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        genericClient.logout();
     }
 }
