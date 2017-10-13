@@ -30,14 +30,9 @@ public class RmiClient extends GenericClient implements RemoteRmiClient {
      */
     private int pingValue = 0;
 
-    private RemoteMainRmiServer remoteMainRmiServer;
-
-    /**
-     * Server's class created to communicate with only a specific client
-     */
-    private transient RemoteRmiServer remoteRmiServer;
-
     private transient Registry registry;
+    private RemoteMainRmiServer remoteMainRmiServer;
+    private transient RemoteRmiServer remoteRmiServer;
 
     /**
      * It connect a client to RMI server, saves remote references
@@ -52,7 +47,7 @@ public class RmiClient extends GenericClient implements RemoteRmiClient {
             registry = LocateRegistry.getRegistry(IP, PORT);
             remoteMainRmiServer = (RemoteMainRmiServer) registry.lookup(MainRmiServer.REMOTE_SERVER_NAME);
             UnicastRemoteObject.exportObject(this, 0);
-            remoteRmiServer = remoteMainRmiServer.connect("franco", this);
+            remoteRmiServer = remoteMainRmiServer.connect(this);
             Console.write("Server remote object loaded!");
         } catch (RemoteException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during registry binding",e);
@@ -63,11 +58,20 @@ public class RmiClient extends GenericClient implements RemoteRmiClient {
 
     @Override
     public void login(String userName) {
-
+        try {
+            remoteRmiServer.tryLogin(userName);
+        } catch (RemoteException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during remote connection",e);
+        }
     }
 
     @Override
     public void logout() {
 
+    }
+
+    @Override
+    public void write(String action) {
+        Console.write(action);
     }
 }

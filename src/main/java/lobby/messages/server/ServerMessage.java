@@ -1,6 +1,6 @@
 package lobby.messages.server;
 
-import lobby.client.socket.SocketClient;
+import lobby.networking.client.socket.SocketClient;
 
 import java.io.IOException;
 import java.io.Serializable;

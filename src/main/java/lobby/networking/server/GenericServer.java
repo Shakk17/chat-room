@@ -1,4 +1,4 @@
-package lobby.server;
+package lobby.networking.server;
 
 /**
  * Interface implemented by both RMI and Socket server. It'll handle the net-connectivity of each player.
@@ -10,9 +10,9 @@ public abstract class GenericServer {
     private String userName;
 
     public GenericServer() {
-        this.connected = true;
-        this.logged = false;
-        this.userName = "not set yet";
+        setConnected(true);
+        setLogged(false);
+        setUserName("not set yet");
     }
 
     public boolean isConnected() {

@@ -1,8 +1,8 @@
-package lobby.server;
+package lobby.networking.server;
 
 import lobby.Console;
-import lobby.server.rmi.MainRmiServer;
-import lobby.server.socket.MainSocketServer;
+import lobby.networking.server.rmi.MainRmiServer;
+import lobby.networking.server.socket.MainSocketServer;
 
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -97,9 +97,8 @@ public class Server {
      * @return true if successful, false if username is already taken.
      */
     public boolean addUser(String userName, GenericServer genericServer) {
-        for (String string : users.keySet())
-            if (string.equals(userName))
-                return false;
+        if (! checkUserName(userName))
+            return false;
         users.put(userName, genericServer);
         Console.writeGreen("The user " + userName + " just entered the lobby!");
         return true;

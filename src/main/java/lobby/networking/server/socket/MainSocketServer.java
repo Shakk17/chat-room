@@ -1,7 +1,7 @@
-package lobby.server.socket;
+package lobby.networking.server.socket;
 
 import lobby.Console;
-import lobby.server.Server;
+import lobby.networking.server.Server;
 
 import java.io.IOException;
 import java.net.Socket;

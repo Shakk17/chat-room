@@ -26,7 +26,7 @@ public class MainRmiServer implements RemoteMainRmiServer {
     /**
      * Starts server and waits for clients to connect.
      */
-    public void start (){
+    public void start(){
         Server.write(Server.RMI_SERVER_NAME, "Binding main server to registry...");
         try {
             registry = LocateRegistry.createRegistry(Server.RMI_PORT);
@@ -40,24 +40,18 @@ public class MainRmiServer implements RemoteMainRmiServer {
     /**
      * creates a new PersonalServer (which implements ServerInterface) to interact specifically with one client
      * if the player has to reconnect, it starts DisconnectedHandler's reconnectPlayer, otherwise it puts the player in a new game waiting room
-     * @param username player's username
      * @param remoteRmiClient client's stub
      * @return RemoteServer stub
      */
     @Override
-    public RemoteRmiServer connect(String username, RemoteRmiClient remoteRmiClient) {
-        print("connecting...", username);
+    public RemoteRmiServer connect(RemoteRmiClient remoteRmiClient) {
+        Server.write(Server.RMI_SERVER_NAME, "Connection incoming.");
         try {
-            RmiServer rmiServer = new RmiServer(username, remoteRmiClient);
-            print("connected", username);
+            RmiServer rmiServer = new RmiServer(remoteRmiClient);
             return rmiServer;
         } catch (RemoteException e) {
-            print("connection failed", username);
+            Server.write(Server.RMI_SERVER_NAME, "Connection failed.");
         }
         return null;
-    }
-
-    private void print (String s, String username){
-        Console.write("[CLIENT RMI "+ username +"]: "+ s);
     }
 }

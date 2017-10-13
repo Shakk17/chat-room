@@ -1,9 +1,9 @@
-package lobby.server.socket;
+package lobby.networking.server.socket;
 
 import lobby.SocketStream;
 import lobby.messages.client.ClientMessage;
-import lobby.server.GenericServer;
-import lobby.server.networkObservers.ObserversNetworkHandler;
+import lobby.networking.server.GenericServer;
+import lobby.networking.server.networkObservers.ObserversNetworkHandler;
 
 import java.io.IOException;
 import java.net.Socket;
