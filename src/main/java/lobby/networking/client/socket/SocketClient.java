@@ -1,11 +1,11 @@
-package lobby.client.socket;
+package lobby.networking.client.socket;
 
 import lobby.Console;
 import lobby.UserInterfaceType;
-import lobby.client.Client;
-import lobby.client.GenericClient;
+import lobby.networking.client.Client;
+import lobby.networking.client.GenericClient;
 import lobby.SocketStream;
-import lobby.client.TextUserInterface;
+import lobby.networking.client.TextUserInterface;
 import lobby.messages.client.LoginMessage;
 import lobby.messages.client.LogoutMessage;
 import lobby.messages.server.ServerMessage;
@@ -72,7 +72,7 @@ public class SocketClient extends GenericClient implements Runnable {
         socketStream.sendObject(loginMessage);
         setLogged(socketStream.receiveBoolean());
         if (isLogged()) {
-            setUsername(loginMessage.getUserName());
+            setUserName(loginMessage.getUserName());
             Console.writeGreen("Login successful!");
         }
         else
@@ -81,7 +81,7 @@ public class SocketClient extends GenericClient implements Runnable {
 
     @Override
     public void logout() {
-        LogoutMessage logoutMessage = new LogoutMessage(getUsername());
+        LogoutMessage logoutMessage = new LogoutMessage(getUserName());
         socketStream.sendObject(logoutMessage);
         boolean logoutSuccessful = socketStream.receiveBoolean();
         setLogged(! logoutSuccessful);

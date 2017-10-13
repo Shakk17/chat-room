@@ -1,8 +1,9 @@
-package lobby.server.rmi;
+package lobby.networking.server.rmi;
 
-import lobby.Console;
-import lobby.client.rmi.RemoteRmiClient;
-import lobby.server.Server;
+import lobby.networking.RemoteMainRmiServer;
+import lobby.networking.RemoteRmiServer;
+import lobby.networking.RemoteRmiClient;
+import lobby.networking.server.Server;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -46,12 +47,12 @@ public class MainRmiServer implements RemoteMainRmiServer {
     @Override
     public RemoteRmiServer connect(RemoteRmiClient remoteRmiClient) {
         Server.write(Server.RMI_SERVER_NAME, "Connection incoming.");
+        RemoteRmiServer rmiServer = new RmiServer(remoteRmiClient);
         try {
-            RmiServer rmiServer = new RmiServer(remoteRmiClient);
-            return rmiServer;
+            remoteRmiClient.setConnected(true);
         } catch (RemoteException e) {
-            Server.write(Server.RMI_SERVER_NAME, "Connection failed.");
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failed to connect.", e);
         }
-        return null;
+        return rmiServer;
     }
 }

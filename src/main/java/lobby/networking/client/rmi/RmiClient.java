@@ -1,21 +1,20 @@
-package lobby.client.rmi;
+package lobby.networking.client.rmi;
 
 import lobby.Console;
-import lobby.client.Client;
-import lobby.client.GenericClient;
-import lobby.server.Server;
-import lobby.server.rmi.MainRmiServer;
-import lobby.server.rmi.RemoteMainRmiServer;
-import lobby.server.rmi.RemoteRmiServer;
-import lobby.server.rmi.RmiServer;
+import lobby.UserInterfaceType;
+import lobby.networking.RemoteRmiClient;
+import lobby.networking.client.Client;
+import lobby.networking.client.GenericClient;
+import lobby.networking.client.TextUserInterface;
+import lobby.networking.server.Server;
+import lobby.networking.server.rmi.MainRmiServer;
+import lobby.networking.RemoteMainRmiServer;
+import lobby.networking.RemoteRmiServer;
 
-import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,9 +29,9 @@ public class RmiClient extends GenericClient implements RemoteRmiClient {
      */
     private int pingValue = 0;
 
-    private transient Registry registry;
+    private Registry registry;
     private RemoteMainRmiServer remoteMainRmiServer;
-    private transient RemoteRmiServer remoteRmiServer;
+    private RemoteRmiServer remoteRmiServer;
 
     /**
      * It connect a client to RMI server, saves remote references
@@ -54,6 +53,9 @@ public class RmiClient extends GenericClient implements RemoteRmiClient {
         } catch (NotBoundException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during registry lookup",e);
         }
+
+        if (client.getUserInterfaceType() == UserInterfaceType.TEXT)
+            setUserInterface(new TextUserInterface(this));
     }
 
     @Override
@@ -67,7 +69,11 @@ public class RmiClient extends GenericClient implements RemoteRmiClient {
 
     @Override
     public void logout() {
-
+        try {
+            remoteRmiServer.tryLogout(getUserName());
+        } catch (RemoteException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during remote connection",e);
+        }
     }
 
     @Override

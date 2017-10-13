@@ -1,4 +1,4 @@
-package lobby.client;
+package lobby.networking.client;
 
 import lobby.Console;
 import lobby.view.LobbyView;
@@ -15,12 +15,13 @@ public class TextUserInterface implements UserInterface {
 
     private void readChoice() {
         while (genericClient.isConnected()) {
+            Console.writeBlue("Type something.");
             String input = Console.readString();
             switch (input) {
-                case "tryLogin":
+                case "login":
                     tryLogin();
                     break;
-                case "tryLogout":
+                case "logout":
                     tryLogout();
                     break;
                 default:
