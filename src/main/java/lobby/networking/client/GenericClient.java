@@ -5,7 +5,6 @@ import lobby.view.LobbyView;
 public abstract class GenericClient {
 
     private Client client;
-    private LobbyView lobbyView;
     private UserInterface userInterface;
 
     private boolean connected;
@@ -27,10 +26,6 @@ public abstract class GenericClient {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public void setLobbyView(LobbyView lobbyView) {
-        this.lobbyView = lobbyView;
     }
 
     public UserInterface getUserInterface() {

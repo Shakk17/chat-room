@@ -1,6 +1,8 @@
 package lobby.networking.server;
 
 import lobby.Console;
+import lobby.model.Lobby;
+import lobby.model.User;
 import lobby.networking.server.rmi.MainRmiServer;
 import lobby.networking.server.socket.MainSocketServer;
 
@@ -25,6 +27,8 @@ public class Server {
     private static Server serverInstance;
     private boolean serverActive;
 
+    private Lobby lobby;
+
     /**
      * Set of executors used to provide new threads for new games.
      */
@@ -33,6 +37,7 @@ public class Server {
     private Server() {
         this.users = new ConcurrentHashMap<>();
         this.serverActive = true;
+        this.lobby = Lobby.getLobbyInstance();
     }
 
     public static Server getServerInstance() {
@@ -68,7 +73,7 @@ public class Server {
             command = Console.readString();
             switch (command) {
                 case "users":
-                    printUsers();
+                    lobby.printUsers();
                     break;
                 case "close":
                     serverActive = false;
@@ -100,6 +105,7 @@ public class Server {
         if (! checkUserName(userName))
             return false;
         users.put(userName, genericServer);
+        lobby.addUser(userName);
         Console.writeGreen("The user " + userName + " just entered the lobby!");
         return true;
     }
@@ -110,23 +116,12 @@ public class Server {
      * @return true is successful, false otherwise.
      */
     public boolean removeUser(String userName) {
-        boolean userRemoved = null != users.remove(userName);
-        if (userRemoved)
-            Console.writeGreen("The user " + userName + " just exited the lobby!");
-        return userRemoved;
-    }
-
-    private void printUsers() {
-        if (users.isEmpty()) {
-            Console.writeBlue("The lobby is empty!");
-            return;
-        }
-        Console.writeBlue(users.size() + " users logged in: ");
-        StringBuilder userNames = new StringBuilder();
-        for (String userName : users.keySet())
-            userNames.append(userName).append(", ");
-        userNames.delete(userNames.length() - 2, userNames.length());
-        Console.write(userNames.toString());
+        if (! checkUserName(userName))
+            return false;
+        users.remove(userName);
+        lobby.removeUser(userName);
+        Console.writeGreen("The user " + userName + " just exited the lobby!");
+        return true;
     }
 
     public Map<String, GenericServer> getUsers() {

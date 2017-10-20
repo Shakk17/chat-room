@@ -5,12 +5,14 @@ import lobby.Console;
 import lobby.UserInterfaceType;
 import lobby.networking.client.rmi.RmiClient;
 import lobby.networking.client.socket.SocketClient;
+import lobby.view.LobbyView;
 
 public class Client {
 
     private ConnectionType connectionType;
     private UserInterfaceType userInterfaceType;
     private GenericClient genericClient;
+    private LobbyView lobbyView;
 
     public void launchClient() {
         Console.write("What type of connection do you want to use?");
@@ -34,5 +36,13 @@ public class Client {
 
     public GenericClient getGenericClient() {
         return genericClient;
+    }
+
+    public LobbyView getLobbyView() {
+        return lobbyView;
+    }
+
+    public void setLobbyView(LobbyView lobbyView) {
+        this.lobbyView = lobbyView;
     }
 }

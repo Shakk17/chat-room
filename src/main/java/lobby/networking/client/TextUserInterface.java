@@ -6,7 +6,6 @@ import lobby.view.LobbyView;
 public class TextUserInterface implements UserInterface {
 
     private GenericClient genericClient;
-    private LobbyView lobbyView;
 
     public TextUserInterface(GenericClient genericClient) {
         this.genericClient = genericClient;

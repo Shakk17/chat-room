@@ -1,22 +1,50 @@
 package lobby.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import lobby.Console;
 
-public class Lobby {
+import java.util.*;
 
-    public static Lobby lobbyInstance;
-    private List<User> users;
+public class Lobby extends Observable {
+
+    private static Lobby lobbyInstance;
+    private Map<String, User> users;
     private List<Table> tables;
 
     private Lobby() {
-        this.users = new ArrayList<User>();
-        this.tables = new ArrayList<Table>();
+        this.users = new HashMap<>();
+        this.tables = new ArrayList<>();
+    }
+
+    public void addUser(String userName) {
+        users.put(userName, new User(userName));
+        this.notifyObservers();
+    }
+
+    public void removeUser(String userName) {
+        users.remove(userName);
+        this.notifyObservers();
+    }
+
+    public void printUsers() {
+        if (users.isEmpty()) {
+            Console.writeBlue("The lobby is empty!");
+            return;
+        }
+        Console.writeBlue(users.size() + " users logged in: ");
+        StringBuilder userNames = new StringBuilder();
+        for (String userName : users.keySet())
+            userNames.append(userName).append(", ");
+        userNames.delete(userNames.length() - 2, userNames.length());
+        Console.write(userNames.toString());
     }
 
     public static Lobby getLobbyInstance() {
         if (lobbyInstance == null)
             lobbyInstance = new Lobby();
         return lobbyInstance;
+    }
+
+    public Map<String, User> getUsers() {
+        return users;
     }
 }
