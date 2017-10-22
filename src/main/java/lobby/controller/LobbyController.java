@@ -1,5 +1,7 @@
 package lobby.controller;
 
+import lobby.ModelChange;
+import lobby.actions.client.ClientAction;
 import lobby.model.Lobby;
 import lobby.view.LobbyView;
 
@@ -15,8 +17,16 @@ public class LobbyController implements Observer {
         this.lobby = lobby;
     }
 
+    void update(ClientAction clientAction) throws IllegalAccessException {
+
+    }
+
+    void update(ModelChange modelChange) {
+
+    }
+
     @Override
-    public void update(Observable lobby, Object arg) {
-        
+    public void update(Observable o, Object arg) {
+
     }
 }

@@ -13,5 +13,4 @@ public interface ControllerObserver {
      *
      * @throws IllegalAccessException if a client tries to make an illegal action.
      */
-    void update(ClientAction clientAction) throws IllegalAccessException;
 }
