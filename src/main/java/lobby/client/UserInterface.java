@@ -1,4 +1,4 @@
-package lobby.networking.client;
+package lobby.client;
 
 public interface UserInterface {
     void tryLogin();

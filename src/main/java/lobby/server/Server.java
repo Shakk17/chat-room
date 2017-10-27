@@ -1,10 +1,9 @@
-package lobby.networking.server;
+package lobby.server;
 
 import lobby.Console;
 import lobby.model.Lobby;
-import lobby.model.User;
-import lobby.networking.server.rmi.MainRmiServer;
-import lobby.networking.server.socket.MainSocketServer;
+import lobby.server.rmi.MainRmiServer;
+import lobby.server.socket.MainSocketServer;
 
 import java.rmi.RemoteException;
 import java.util.Map;

@@ -1,6 +1,4 @@
-package lobby.networking.client;
-
-import lobby.view.LobbyView;
+package lobby.client;
 
 public abstract class GenericClient {
 

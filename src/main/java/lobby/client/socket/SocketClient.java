@@ -1,11 +1,11 @@
-package lobby.networking.client.socket;
+package lobby.client.socket;
 
 import lobby.Console;
 import lobby.UserInterfaceType;
-import lobby.networking.client.Client;
-import lobby.networking.client.GenericClient;
 import lobby.SocketStream;
-import lobby.networking.client.TextUserInterface;
+import lobby.client.Client;
+import lobby.client.GenericClient;
+import lobby.client.TextUserInterface;
 import lobby.messages.client.LoginMessage;
 import lobby.messages.client.LogoutMessage;
 import lobby.messages.server.ServerMessage;

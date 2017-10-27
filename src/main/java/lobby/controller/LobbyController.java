@@ -1,12 +1,10 @@
 package lobby.controller;
 
 import lobby.ModelChange;
+import lobby.Observer;
 import lobby.actions.client.ClientAction;
 import lobby.model.Lobby;
 import lobby.view.LobbyView;
-
-import java.util.Observable;
-import java.util.Observer;
 
 public class LobbyController implements Observer {
 
@@ -26,7 +24,12 @@ public class LobbyController implements Observer {
     }
 
     @Override
-    public void update(Observable o, Object arg) {
+    public void update() {
+
+    }
+
+    @Override
+    public <C> void update(C change) {
 
     }
 }

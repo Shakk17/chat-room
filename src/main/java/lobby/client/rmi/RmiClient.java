@@ -1,15 +1,11 @@
-package lobby.networking.client.rmi;
+package lobby.client.rmi;
 
-import lobby.Console;
-import lobby.UserInterfaceType;
-import lobby.networking.RemoteRmiClient;
-import lobby.networking.client.Client;
-import lobby.networking.client.GenericClient;
-import lobby.networking.client.TextUserInterface;
-import lobby.networking.server.Server;
-import lobby.networking.server.rmi.MainRmiServer;
-import lobby.networking.RemoteMainRmiServer;
-import lobby.networking.RemoteRmiServer;
+import lobby.*;
+import lobby.client.Client;
+import lobby.client.GenericClient;
+import lobby.client.TextUserInterface;
+import lobby.server.Server;
+import lobby.server.rmi.MainRmiServer;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;

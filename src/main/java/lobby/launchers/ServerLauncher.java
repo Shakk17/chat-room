@@ -1,6 +1,6 @@
 package lobby.launchers;
 
-import lobby.networking.server.Server;
+import lobby.server.Server;
 
 public class ServerLauncher {
 

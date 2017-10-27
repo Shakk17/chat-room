@@ -1,6 +1,6 @@
 package lobby.launchers;
 
-import lobby.networking.client.Client;
+import lobby.client.Client;
 
 public class ClientLauncher {
 

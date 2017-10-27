@@ -1,9 +1,9 @@
-package lobby.networking.server.rmi;
+package lobby.server.rmi;
 
-import lobby.networking.RemoteMainRmiServer;
-import lobby.networking.RemoteRmiServer;
-import lobby.networking.RemoteRmiClient;
-import lobby.networking.server.Server;
+import lobby.RemoteMainRmiServer;
+import lobby.RemoteRmiServer;
+import lobby.RemoteRmiClient;
+import lobby.server.Server;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;

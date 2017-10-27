@@ -1,4 +1,4 @@
-package lobby.networking.server;
+package lobby.server;
 
 /**
  * Interface implemented by both RMI and Socket server. It'll handle the net-connectivity of each player.

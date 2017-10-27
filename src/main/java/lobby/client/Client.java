@@ -1,10 +1,10 @@
-package lobby.networking.client;
+package lobby.client;
 
 import lobby.ConnectionType;
 import lobby.Console;
 import lobby.UserInterfaceType;
-import lobby.networking.client.rmi.RmiClient;
-import lobby.networking.client.socket.SocketClient;
+import lobby.client.rmi.RmiClient;
+import lobby.client.socket.SocketClient;
 import lobby.view.LobbyView;
 
 public class Client {

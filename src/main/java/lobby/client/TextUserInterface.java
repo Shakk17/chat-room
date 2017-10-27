@@ -1,7 +1,6 @@
-package lobby.networking.client;
+package lobby.client;
 
 import lobby.Console;
-import lobby.view.LobbyView;
 
 public class TextUserInterface implements UserInterface {
 
