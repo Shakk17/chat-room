@@ -1,18 +1,20 @@
-package lobby.actions;
+package lobby.messages.actions;
 
 import lobby.model.LobbyModel;
 
-public abstract class Action {
+import java.io.Serializable;
 
-    private String userName;
+public abstract class Action implements Serializable {
 
-    public Action(String userName) {
-        this.userName = userName;
+    private int ID;
+
+    public Action(Integer ID) {
+        this.ID = ID;
     }
 
     public abstract void execute(LobbyModel lobbyModel);
 
-    public String getUserName() {
-        return userName;
+    public Integer getID() {
+        return ID;
     }
 }

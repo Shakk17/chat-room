@@ -1,35 +1,18 @@
 package lobby.controller;
 
 import lobby.Observer;
-import lobby.changes.ModelChange;
-import lobby.model.LobbyModel;
+import lobby.messages.changes.ModelChange;
+import lobby.server.GenericServer;
 import lobby.server.Server;
-import lobby.view.LobbyView;
 
-import java.io.Serializable;
+import java.util.Map;
 
-public class LobbyController implements Observer<ModelChange>, Serializable {
-
-    private Server server;
-
-    private LobbyModel lobbyModel;
-    private LobbyView lobbyView;
-
-    public LobbyController(Server server, LobbyModel lobbyModel) {
-        this.server = server;
-        this.lobbyModel = lobbyModel;
-
-        lobbyModel.registerObserver(this);
-        this.lobbyView = new LobbyView(this);
-    }
+public class LobbyServerController implements Observer<ModelChange> {
 
     @Override
-    public void update() {
-
-    }
-
-    @Override
-    public void update(ModelChange change) {
-
+    public void update(ModelChange modelChange) {
+        String userName = modelChange.getUserName();
+        Integer ID = Server.getServerInstance().getIdbyUserName(userName);
+        Server.getServerInstance().getUsersGenericServers().get(ID).sendModelChange(modelChange);
     }
 }

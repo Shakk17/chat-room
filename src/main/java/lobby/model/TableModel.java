@@ -1,4 +1,4 @@
 package lobby.model;
 
-public class Table {
+public class TableModel {
 }

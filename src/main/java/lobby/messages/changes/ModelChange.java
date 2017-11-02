@@ -1,4 +1,4 @@
-package lobby.changes;
+package lobby.messages.changes;
 
 import lobby.view.LobbyView;
 

@@ -1,9 +1,11 @@
 package lobby.model;
 
-public class User {
+import java.io.Serializable;
+
+public class UserModel implements Serializable {
     private String userName;
 
-    public User(String userName) {
+    public UserModel(String userName) {
         this.userName = userName;
     }
 

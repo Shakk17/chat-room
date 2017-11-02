@@ -1,15 +1,15 @@
-package lobby.actions;
+package lobby.messages.actions;
 
 import lobby.model.LobbyModel;
 
 public class TryLogout extends Action {
 
-    public TryLogout(String userName) {
-        super(userName);
+    public TryLogout(Integer ID) {
+        super(ID);
     }
 
     @Override
     public void execute(LobbyModel lobbyModel) {
-        lobbyModel.removeUser(this.getUserName());
+        lobbyModel.removeUser(this.getID());
     }
 }

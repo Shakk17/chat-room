@@ -1,32 +1,37 @@
 package lobby.model;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import lobby.Console;
+import lobby.messages.changes.AddUserChange;
+import lobby.messages.changes.ModelChange;
 import lobby.Observable;
+import lobby.messages.changes.RemoveUserChange;
+import lobby.server.Server;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class Lobby extends Observable {
+public class LobbyModel extends Observable<ModelChange> {
 
-    private static Lobby lobbyInstance;
-    private Map<String, User> users;
-    private List<Table> tables;
+    private Map<String, UserModel> users;
 
-    private Lobby() {
+    public LobbyModel() {
         this.users = new HashMap<>();
-        this.tables = new ArrayList<>();
     }
 
-    public void addUser(String userName) {
-        users.put(userName, new User(userName));
-        this.notifyObservers();
+    public void addUser(Integer ID, String userName) {
+        UserModel userModel = new UserModel(userName);
+        users.put(userName, userModel);
+        Server.getServerInstance().getUserNames().put(ID, userName);
+        Console.writeGreen(userName +" just logged in!");
+        this.notifyObservers(new AddUserChange(userModel));
     }
 
-    public void removeUser(String userName) {
+    public void removeUser(Integer ID) {
+        String userName = Server.getServerInstance().getUserNames().get(ID);
         users.remove(userName);
-        this.notifyObservers();
+        Console.writeGreen(userName +" just logged out!");
+        this.notifyObservers(new RemoveUserChange(new UserModel(userName)));
     }
 
     public void printUsers() {
@@ -42,13 +47,7 @@ public class Lobby extends Observable {
         Console.write(userNames.toString());
     }
 
-    public static Lobby getLobbyInstance() {
-        if (lobbyInstance == null)
-            lobbyInstance = new Lobby();
-        return lobbyInstance;
-    }
-
-    public Map<String, User> getUsers() {
+    public Map<String, UserModel> getUsers() {
         return users;
     }
 }
