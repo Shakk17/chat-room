@@ -1,6 +1,6 @@
 package lobby.messages;
 
-import lobby.networking.client.socket.SocketClient;
+import lobby.client.socket.SocketClient;
 import lobby.messages.server.ServerMessage;
 
 import java.io.IOException;
