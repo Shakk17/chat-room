@@ -1,11 +1,15 @@
 package lobby.server;
 
 import lobby.Console;
-import lobby.model.Lobby;
+import lobby.controller.LobbyServerController;
+import lobby.model.LobbyModel;
 import lobby.server.rmi.MainRmiServer;
 import lobby.server.socket.MainSocketServer;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -21,12 +25,14 @@ public class Server {
     public static final String SOCKET_SERVER_NAME = "SOCKET SERVER";
     public static final String RMI_SERVER_NAME = "RMI SERVER";
 
-    private Map<String, GenericServer> users;
+    private List<GenericServer> usersGenericServers;
+    private Map<Integer, String> userNames;
 
     private static Server serverInstance;
     private boolean serverActive;
 
-    private Lobby lobby;
+    private LobbyModel lobbyModel;
+    private LobbyServerController lobbyServerController;
 
     /**
      * Set of executors used to provide new threads for new games.
@@ -34,9 +40,13 @@ public class Server {
     private ExecutorService executor;
 
     private Server() {
-        this.users = new ConcurrentHashMap<>();
+        this.usersGenericServers = new ArrayList<>();
+        this.userNames = new HashMap<>();
         this.serverActive = true;
-        this.lobby = Lobby.getLobbyInstance();
+        this.lobbyModel = new LobbyModel();
+        this.lobbyServerController = new LobbyServerController();
+
+        lobbyModel.registerObserver(lobbyServerController);
     }
 
     public static Server getServerInstance() {
@@ -72,7 +82,7 @@ public class Server {
             command = Console.readString();
             switch (command) {
                 case "users":
-                    lobby.printUsers();
+                    lobbyModel.printUsers();
                     break;
                 case "close":
                     serverActive = false;
@@ -89,42 +99,20 @@ public class Server {
         mainSocketServer.interrupt();
     }
 
-    public boolean checkUserName(String userName) {
-        for (String string : users.keySet())
-            if (string.equals(userName))
-                return false;
-        return true;
+    public Integer getIdbyUserName(String userName) {
+        for (Integer ID : getUserNames().keySet())
+            if (userName.equals(userNames.get(ID)))
+                return ID;
+        return null;
+
     }
 
-    /**
-     * Tries to add a user to the map of connected users with correspondent interfaces.
-     * @return true if successful, false if username is already taken.
-     */
-    public boolean addUser(String userName, GenericServer genericServer) {
-        if (! checkUserName(userName))
-            return false;
-        users.put(userName, genericServer);
-        lobby.addUser(userName);
-        Console.writeGreen("The user " + userName + " just entered the lobby!");
-        return true;
+    public List<GenericServer> getUsersGenericServers() {
+        return usersGenericServers;
     }
 
-    /**
-     * Tries to remove a user from users already logged.
-     * @param userName name of the entry to be removed.
-     * @return true is successful, false otherwise.
-     */
-    public boolean removeUser(String userName) {
-        if (! checkUserName(userName))
-            return false;
-        users.remove(userName);
-        lobby.removeUser(userName);
-        Console.writeGreen("The user " + userName + " just exited the lobby!");
-        return true;
-    }
-
-    public Map<String, GenericServer> getUsers() {
-        return users;
+    public Map<Integer, String> getUserNames() {
+        return userNames;
     }
 
     public boolean isServerActive() {
@@ -136,5 +124,13 @@ public class Server {
             Console.writeBlue("["+ name +"]: "+ action);
         else
             Console.writeGreen("["+ name +"]: "+ action);
+    }
+
+    public LobbyModel getLobbyModel() {
+        return lobbyModel;
+    }
+
+    public LobbyServerController getLobbyServerController() {
+        return lobbyServerController;
     }
 }

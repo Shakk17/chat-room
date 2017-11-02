@@ -1,7 +1,8 @@
 package lobby.client.rmi;
 
 import lobby.*;
-import lobby.client.Client;
+import lobby.messages.actions.Action;
+import lobby.messages.changes.ModelChange;
 import lobby.client.GenericClient;
 import lobby.client.TextUserInterface;
 import lobby.server.Server;
@@ -20,56 +21,47 @@ public class RmiClient extends GenericClient implements RemoteRmiClient {
     private static final String IP = Server.IP_ADDRESS;
     private static final int PORT = Server.RMI_PORT;
 
-    /**
-     * Value used to ping this client, always changed after a ping calls to avoid RMI caching problems
-     */
-    private int pingValue = 0;
-
-    private Registry registry;
-    private RemoteMainRmiServer remoteMainRmiServer;
     private RemoteRmiServer remoteRmiServer;
 
     /**
      * It connect a client to RMI server, saves remote references
-     * @param client contains specific of the client.
-     * @throws RemoteException if an RMI connectivity problems occurs
      */
-    public RmiClient(Client client) {
-        super(client);
+    public RmiClient(UserInterfaceType userInterfaceType) {
+        super(userInterfaceType);
+    }
 
+    @Override
+    public void launchClient() {
         try {
             Console.write("Loading RMI registry...");
-            registry = LocateRegistry.getRegistry(IP, PORT);
-            remoteMainRmiServer = (RemoteMainRmiServer) registry.lookup(MainRmiServer.REMOTE_SERVER_NAME);
+            Registry registry = LocateRegistry.getRegistry(IP, PORT);
+            RemoteMainRmiServer remoteMainRmiServer = (RemoteMainRmiServer) registry.lookup(MainRmiServer.REMOTE_SERVER_NAME);
             UnicastRemoteObject.exportObject(this, 0);
             remoteRmiServer = remoteMainRmiServer.connect(this);
+            setConnected(true);
             Console.write("Server remote object loaded!");
         } catch (RemoteException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during registry binding",e);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during registry binding", e);
         } catch (NotBoundException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during registry lookup",e);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during registry lookup", e);
         }
 
-        if (client.getUserInterfaceType() == UserInterfaceType.TEXT)
+        if (getUserInterfaceType() == UserInterfaceType.TEXT)
             setUserInterface(new TextUserInterface(this));
     }
 
     @Override
-    public void login(String userName) {
+    public void sendAction(Action action) {
         try {
-            remoteRmiServer.tryLogin(userName);
+            remoteRmiServer.executeAction(action);
         } catch (RemoteException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during remote connection",e);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during remote method call", e);
         }
     }
 
     @Override
-    public void logout() {
-        try {
-            remoteRmiServer.tryLogout(getUserName());
-        } catch (RemoteException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during remote connection",e);
-        }
+    public void executeModelChange(ModelChange modelChange) throws RemoteException {
+        modelChange.execute(getLobbyView());
     }
 
     @Override

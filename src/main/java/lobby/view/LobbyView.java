@@ -1,17 +1,39 @@
 package lobby.view;
 
 import lobby.Observable;
-import lobby.Observer;
+import lobby.messages.actions.Action;
+import lobby.controller.LobbyClientController;
 
-public class LobbyView extends Observable implements Observer {
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    public void update() {
+public class LobbyView extends Observable<Action> {
 
+    private Map<String, UserView> users;
+    private String userName;
+    private boolean logged;
+
+    public LobbyView() {
+        this.users = new HashMap<>();
     }
 
-    @Override
-    public <C> void update(C change) {
+    public Map<String, UserView> getUsers() {
+        return users;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setLogged(boolean logged) {
+        this.logged = logged;
+    }
+
+    public boolean isLogged() {
+        return logged;
     }
 }

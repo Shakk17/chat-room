@@ -2,67 +2,44 @@ package lobby.server.rmi;
 
 import lobby.RemoteRmiServer;
 import lobby.RemoteRmiClient;
+import lobby.messages.actions.Action;
+import lobby.messages.changes.ModelChange;
 import lobby.server.GenericServer;
 import lobby.server.Server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RmiServer extends GenericServer implements RemoteRmiServer {
-    private static final long serialVersionUID = 8645497989151621062L;
-
-    static final long PING_INTERVAL_SECS = 2;
 
     private RemoteRmiClient remoteRmiClient;
-    //private transient GameController gameController;
-    //private transient ServerGeneralInterfaceImpl playerInterface;
-    //private transient ObserversNetworkHandler observersNetworkHandler;
 
-    private transient Timer timer;
-
-    RmiServer(RemoteRmiClient stub) {
-        this.remoteRmiClient = stub;
-        //playerInterface = new ServerGeneralInterfaceImpl();
-        this.timer = new Timer();
+    RmiServer(RemoteRmiClient remoteRmiClient) {
+        this.remoteRmiClient = remoteRmiClient;
         try {
             UnicastRemoteObject.exportObject(this, 0);
         } catch (RemoteException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during registry binding", e);
         }
-    }
 
-    @Override
-    public void tryLogin(String userName) {
-        boolean loginResult = Server.getServerInstance().addUser(userName, this);
         try {
-            remoteRmiClient.setLogged(loginResult);
-            if (loginResult) {
-                remoteRmiClient.write("Login successful!");
-                remoteRmiClient.setUserName(userName);
-                setLogged(true);
-                setUserName(userName);
-            }
-            else
-                remoteRmiClient.write("Username already taken.");
+            remoteRmiClient.setID(getID());
         } catch (RemoteException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during remote connection",e);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during ID settings", e);
         }
     }
 
     @Override
-    public void tryLogout(String userName) {
-        boolean logoutResult = Server.getServerInstance().removeUser(userName);
+    public void executeAction(Action action) {
+        action.execute(Server.getServerInstance().getLobbyModel());
+    }
+
+    @Override
+    public void sendModelChange(ModelChange modelChange) {
         try {
-            remoteRmiClient.setLogged(! logoutResult);
-            if (logoutResult) {
-                remoteRmiClient.write("Logout successful!");
-                setLogged(false);
-            }
-            else
-                remoteRmiClient.write("Something went wrong! Still logged.");
+            remoteRmiClient.executeModelChange(modelChange);
         } catch (RemoteException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure during remote connection", e);
         }

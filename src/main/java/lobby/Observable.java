@@ -3,27 +3,24 @@ package lobby;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Observable {
-    private List<Observer> observers;
+public abstract class Observable<C> {
+
+    private List<Observer<C>> observers;
 
     public Observable() {
-        observers = new ArrayList<Observer>();
+        observers = new ArrayList<>();
     }
 
-    public void registerObserver(Observer observer) {
+    public void registerObserver(Observer<C> observer) {
         observers.add(observer);
     }
 
-    public void unregisterObserver(Observer observer) {
+    public void unregisterObserver(Observer<C> observer) {
         this.observers.remove(observer);
     }
 
-    public void notifyObservers() {
-        for(Observer observer : this.observers)
-            observer.update();
-    }
-    public <C> void notifyObservers(C change) {
-        for(Observer observer : this.observers)
+    public void notifyObservers(C change) {
+        for(Observer<C> observer : this.observers)
             observer.update(change);
     }
 }

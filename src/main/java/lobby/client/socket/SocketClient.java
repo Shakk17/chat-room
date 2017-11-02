@@ -3,11 +3,11 @@ package lobby.client.socket;
 import lobby.Console;
 import lobby.UserInterfaceType;
 import lobby.SocketStream;
-import lobby.client.Client;
+import lobby.messages.actions.Action;
+import lobby.messages.changes.ModelChange;
 import lobby.client.GenericClient;
 import lobby.client.TextUserInterface;
-import lobby.messages.client.LoginMessage;
-import lobby.messages.client.LogoutMessage;
+import lobby.messages.server.IdMessage;
 import lobby.messages.server.ServerMessage;
 
 import java.io.IOException;
@@ -27,11 +27,13 @@ public class SocketClient extends GenericClient implements Runnable {
 
     /**
      * Sets up the socket stream handling the connection.
-     * @param client contains specific of the client.
      */
-    public SocketClient(Client client) {
-        super(client);
+    public SocketClient(UserInterfaceType userInterfaceType) {
+        super(userInterfaceType);
+    }
 
+    @Override
+    public void launchClient() {
         Socket socket;
         try {
             socket = new Socket(IP_ADDRESS, PORT);
@@ -42,10 +44,15 @@ public class SocketClient extends GenericClient implements Runnable {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Failure while establishing socket connection.", e);
         }
 
-        if (client.getUserInterfaceType() == UserInterfaceType.TEXT)
-            setUserInterface(new TextUserInterface(this));
-
         new Thread(this).start();
+
+        if (getUserInterfaceType() == UserInterfaceType.TEXT)
+            setUserInterface(new TextUserInterface(this));
+    }
+
+    @Override
+    public void sendAction(Action action) {
+        socketStream.sendObject(action);
     }
 
     public void run() {
@@ -57,36 +64,16 @@ public class SocketClient extends GenericClient implements Runnable {
      */
     private void waitForMessage() {
         while (isConnected()) {
-            ServerMessage serverMessage = (ServerMessage) getSocketStream().receiveObject();
-            try {
-                serverMessage.execute(this);
-            } catch (IOException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Socket connectivity error.", e);
-            }
+            Object message = getSocketStream().receiveObject();
+            if (message instanceof ModelChange)
+                ((ModelChange) message).execute(getLobbyView());
+            else if (message instanceof ServerMessage)
+                try {
+                    ((ServerMessage) message).execute(this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         }
-    }
-
-    @Override
-    public void login(String userName) {
-        LoginMessage loginMessage = new LoginMessage(userName);
-        socketStream.sendObject(loginMessage);
-        setLogged(socketStream.receiveBoolean());
-        if (isLogged()) {
-            setUserName(loginMessage.getUserName());
-            Console.writeGreen("Login successful!");
-        }
-        else
-            Console.writeRed("This username is already taken. Try again.");
-    }
-
-    @Override
-    public void logout() {
-        LogoutMessage logoutMessage = new LogoutMessage(getUserName());
-        socketStream.sendObject(logoutMessage);
-        boolean logoutSuccessful = socketStream.receiveBoolean();
-        setLogged(! logoutSuccessful);
-        if (logoutSuccessful)
-            Console.write("You just logged out!");
     }
 
     public SocketStream getSocketStream() {

@@ -16,10 +16,10 @@ public class TextUserInterface implements UserInterface {
             Console.writeBlue("Type something.");
             String input = Console.readString();
             switch (input) {
-                case "login":
+                case "tryLogin":
                     tryLogin();
                     break;
-                case "logout":
+                case "tryLogout":
                     tryLogout();
                     break;
                 default:
@@ -29,20 +29,22 @@ public class TextUserInterface implements UserInterface {
         }
     }
 
+    @Override
     public void tryLogin() {
-        if (genericClient.isLogged()) {
-            Console.write("You are already logged in!");
+        if (genericClient.getLobbyView().isLogged()) {
+            Console.writeRed("You are already logged in!");
             return;
         }
         Console.write("Insert your username to enter the lobby: ");
-        genericClient.login(Console.readString());
+        genericClient.tryLogin(Console.readString());
     }
 
+    @Override
     public void tryLogout() {
-        if (! genericClient.isLogged()) {
+        if (! genericClient.getLobbyView().isLogged()) {
             Console.writeRed("You're not even logged in -.-");
             return;
         }
-        genericClient.logout();
+        genericClient.tryLogout();
     }
 }

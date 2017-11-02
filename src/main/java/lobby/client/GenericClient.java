@@ -1,29 +1,43 @@
 package lobby.client;
 
+import lobby.UserInterfaceType;
+import lobby.controller.LobbyClientController;
+import lobby.messages.actions.Action;
+import lobby.messages.actions.TryLogin;
+import lobby.messages.actions.TryLogout;
+import lobby.view.LobbyView;
+
 public abstract class GenericClient {
 
-    private Client client;
+    private UserInterfaceType userInterfaceType;
     private UserInterface userInterface;
-
     private boolean connected;
-    private boolean logged;
-    private String userName;
+    private Integer ID;
 
-    public GenericClient(Client client) {
-        setClient(client);
-        setConnected(false);
-        setLogged(false);
+    private LobbyView lobbyView;
+    private LobbyClientController lobbyClientController;
+
+    public GenericClient(UserInterfaceType userInterfaceType) {
+        this.userInterfaceType = userInterfaceType;
+
+        this.connected = false;
+
+        this.lobbyView = new LobbyView();
+        this.lobbyClientController = new LobbyClientController(this);
+        lobbyView.registerObserver(lobbyClientController);
     }
 
-    abstract public void login(String userName);
-    abstract public void logout();
+    public abstract void launchClient();
 
-    public Client getClient() {
-        return client;
+    public abstract void sendAction(Action action);
+
+    void tryLogin(String userName) {
+        getLobbyView().setUserName(userName);
+        getLobbyView().notifyObservers(new TryLogin(getID(), userName));
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    void tryLogout() {
+        getLobbyView().notifyObservers(new TryLogout(getID()));
     }
 
     public UserInterface getUserInterface() {
@@ -42,19 +56,23 @@ public abstract class GenericClient {
         this.connected = connected;
     }
 
-    public boolean isLogged() {
-        return logged;
+    public Integer getID() {
+        return ID;
     }
 
-    public void setLogged(boolean logged) {
-        this.logged = logged;
+    public void setID(Integer ID) {
+        this.ID = ID;
     }
 
-    public String getUserName() {
-        return userName;
+    public LobbyView getLobbyView() {
+        return lobbyView;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public LobbyClientController getLobbyClientController() {
+        return lobbyClientController;
+    }
+
+    public UserInterfaceType getUserInterfaceType() {
+        return userInterfaceType;
     }
 }
